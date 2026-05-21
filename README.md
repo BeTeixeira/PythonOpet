@@ -18,9 +18,9 @@ Nosso projeto consiste na criação de um app para organizar uma lista de filmes
 </details>
 
 <details>
-<summary><strong>🧩 Como a solução está desenhada? (Clique para expandir)</strong></summary>
+<summary><strong>📌 Bora Brasil, rumo ao Hexa (Clique para expandir)</strong></summary>
 <br>
-Ainda não sabemos mas esse bloco será posteriormente substituído por algo relevante posteriormente
+Alisson, Alex Sandro, Gabriel Magalães, wesley, Casemiro, Bruno Guimarães, Neymar, Vini Junior, Endrick, Raphinha, Carlo Ancelloti.
 </details>
 
 ## 🛠️ Stack Tecnológica e Princípios
