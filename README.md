@@ -12,9 +12,9 @@
 Este projeto consiste em uma aplicação desenvolvida em **Python** projetada para rodar de forma escalável em ambiente Cloud. O foco do desenvolvimento está no foco em futuras requisições e a adição de novos componentes.
 
 <details>
-<summary><strong>🎯 Qual problema resolvemos? (Clique para expandir)</strong></summary>
+<summary><strong>🎯 Ideia principal (Clique para expandir)</strong></summary>
 <br>
-Ainda não sabemos mas esse bloco será posteriormente substituído por algo relevante posteriormente
+Nosso projeto consiste na criação de um app para organizar uma lista de filmes assistidos, a partir de um CRUD, aonde poderemos adicionar fimles, séries e jogos e avaliá-los com uma nota de 1 a 5 
 </details>
 
 <details>
