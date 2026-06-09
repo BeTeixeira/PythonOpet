@@ -14,14 +14,9 @@ Este projeto consiste em uma aplicação desenvolvida em **Python** projetada pa
 <details>
 <summary><strong>🎯 Ideia principal (Clique para expandir)</strong></summary>
 <br>
-Nosso projeto consiste na criação de um app para organizar uma lista de filmes assistidos, a partir de um CRUD, aonde poderemos adicionar fimles, séries e jogos e avaliá-los com uma nota de 1 a 5 
+Nosso projeto consiste na criação de um app para organizar uma lista de jogos populares, a partir de um CRUD, aonde poderemos adicionar jogos e avaliá-los com uma nota de 1 a 5 
 </details>
 
-<details>
-<summary><strong>📌 Bora Brasil, rumo ao Hexa (Clique para expandir)</strong></summary>
-<br>
-Alisson, Alex Sandro, Gabriel Magalães, wesley, Casemiro, Bruno Guimarães, Neymar, Vini Junior, Endrick, Raphinha, Carlo Ancelloti.
-</details>
 
 ## 🛠️ Stack Tecnológica e Princípios
 
