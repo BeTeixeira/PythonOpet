@@ -1,0 +1,3 @@
+Nome do servidor: gamestartidea3.database.windows.net
+
+Banco de dados: gamestart
