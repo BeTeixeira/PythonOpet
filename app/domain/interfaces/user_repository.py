@@ -1,0 +1,28 @@
+import uuid
+from abc import ABC, abstractmethod
+
+from app.domain.models.user import User
+from app.domain.schemas.user import UserCreate, UserUpdate
+
+
+class AbstractUserRepository(ABC):
+    @abstractmethod
+    async def get_by_id(self, user_id: uuid.UUID) -> User | None: ...
+
+    @abstractmethod
+    async def get_by_email(self, email: str) -> User | None: ...
+
+    @abstractmethod
+    async def get_by_username(self, username: str) -> User | None: ...
+
+    @abstractmethod
+    async def list_all(self, *, skip: int = 0, limit: int = 20) -> list[User]: ...
+
+    @abstractmethod
+    async def create(self, data: UserCreate) -> User: ...
+
+    @abstractmethod
+    async def update(self, user: User, data: UserUpdate) -> User: ...
+
+    @abstractmethod
+    async def delete(self, user: User) -> None: ...
