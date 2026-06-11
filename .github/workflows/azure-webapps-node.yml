@@ -53,6 +53,7 @@ jobs:
             --settings \
               APP_ENV=production \
               LOG_JSON=true \
+              WEBSITES_PORT=8000 \
               SECRET_KEY="${{ secrets.SECRET_KEY }}" \
               DATABASE_URL="${{ secrets.DATABASE_URL }}" \
               GITHUB_CLIENT_ID="${{ secrets.GITHUB_CLIENT_ID }}" \
