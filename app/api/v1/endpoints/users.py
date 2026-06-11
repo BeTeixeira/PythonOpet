@@ -2,9 +2,10 @@ import uuid
 
 from fastapi import APIRouter, HTTPException, Query, status
 
-from app.api.dependencies import UserServiceDep
+from app.api.dependencies import AdminUser, CurrentUserFull, UserServiceDep
+from app.domain.models.user import User
 from app.domain.schemas.user import UserCreate, UserResponse, UserUpdate
-from app.infrastructure.exceptions import ConflictError, NotFoundError
+from app.infrastructure.exceptions import ConflictError, ForbiddenError, NotFoundError
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -39,8 +40,16 @@ async def create_user(data: UserCreate, service: UserServiceDep) -> UserResponse
 
 @router.patch("/{user_id}", response_model=UserResponse)
 async def update_user(
-    user_id: uuid.UUID, data: UserUpdate, service: UserServiceDep
+    user_id: uuid.UUID,
+    data: UserUpdate,
+    service: UserServiceDep,
+    current_user: CurrentUserFull,
 ) -> UserResponse:
+    if current_user.id != user_id and current_user.role.value != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You can only update your own profile.",
+        )
     try:
         user = await service.update_user(user_id, data)
     except NotFoundError as exc:
@@ -49,7 +58,11 @@ async def update_user(
 
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_user(user_id: uuid.UUID, service: UserServiceDep) -> None:
+async def delete_user(
+    user_id: uuid.UUID,
+    service: UserServiceDep,
+    _admin: AdminUser,
+) -> None:
     try:
         await service.delete_user(user_id)
     except NotFoundError as exc:

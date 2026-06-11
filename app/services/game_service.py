@@ -22,6 +22,9 @@ class GameService:
     async def list_games(self, *, skip: int = 0, limit: int = 20) -> list[Game]:
         return await self._repo.list_all(skip=skip, limit=limit)
 
+    async def search_games(self, query: str, *, skip: int = 0, limit: int = 20) -> list[Game]:
+        return await self._repo.search(query, skip=skip, limit=limit)
+
     async def create_game(self, data: GameCreate) -> Game:
         game = await self._repo.create(data)
         logger.info("Game created: id=%s title=%s", game.id, game.title)

@@ -1,14 +1,26 @@
-# PythonOpet — Game Reviews API
+# Game Reviews — Monorepo
 
 ![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![Deploy](https://img.shields.io/badge/Cloud_Ready-005571?style=for-the-badge&logo=linux&logoColor=white)
+![React Native](https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Expo](https://img.shields.io/badge/Expo_SDK_54-000020?style=for-the-badge&logo=expo&logoColor=white)
 
-> API RESTful para cadastro e avaliação de jogos — CRUD completo de Usuários, Jogos e Avaliações, construída com **FastAPI**, **SQLAlchemy assíncrono** e **Clean Architecture**.
+> Monorepo com **API RESTful** (Python/FastAPI) e **aplicativo mobile** (React Native/Expo) para biblioteca e avaliação de jogos.
 
 ---
+
+## 📦 Projetos do Monorepo
+
+| Pasta | Descrição | Stack principal |
+|---|---|---|
+| [`PythonOpet/`](#-api--back-end) | API RESTful back-end | Python 3.11, FastAPI, PostgreSQL |
+| [`mobile/`](#-mobile--game-library-app) | Aplicativo Android/iOS | React Native, Expo SDK 54 |
+
+---
+
+## 🔙 API — Back-end
 
 ## 📖 Visão Geral
 
@@ -199,4 +211,119 @@ O projeto segue os princípios do **12-Factor App**:
 - **Logs para stdout** — com `LOG_JSON=true`, os logs são emitidos em JSON estruturado, prontos para ingestão no **AWS CloudWatch**, **GCP Cloud Logging** ou qualquer agregador compatível.
 - **Imagem Docker segura** — build multi-stage reduz o tamanho final; processo roda como usuário não-root (`appuser`).
 - **Health check** — endpoint `GET /health` para uso com ALB, Cloud Run, Kubernetes, etc.
+
+---
+
+## 📱 Mobile — Game Library App
+
+![Expo SDK](https://img.shields.io/badge/Expo_SDK-54-000020?style=for-the-badge&logo=expo&logoColor=white)
+![React Native](https://img.shields.io/badge/React_Native-0.81.5-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
+![iOS](https://img.shields.io/badge/iOS-000000?style=for-the-badge&logo=apple&logoColor=white)
+
+> Aplicativo de biblioteca interativa de jogos com tema escuro fosco, glassmorphism, animações fluidas e modo tela cheia no Android.
+
+### 📖 Visão Geral
+
+Interface mobile desenvolvida em **React Native + Expo SDK 54**, rodando inteiramente de forma local com dados simulados (mock data). Segue os princípios de **Clean Code** com componentes modulares e reutilizáveis baseados em variantes, tema escuro translúcido e microinterações em todos os elementos interativos.
+
+<details>
+<summary><strong>🎯 Funcionalidades (Clique para expandir)</strong></summary>
+<br>
+
+- **Tela Inicial** — grade 2 colunas com capas dos jogos, barra de busca funcional (filtra título, gênero e desenvolvedora) e estado de carregamento animado.
+- **Tela de Detalhes** — imagem de capa em destaque, nota em estrelas, descrição e duas abas:
+  - **Comentários** — lista de avaliações simuladas com avatar, nota e data.
+  - **Avaliar** — seleção de 1–5 estrelas e campo de texto com validação.
+- **Navegação Prev/Next** — alterna entre jogos com animação de fade + slide sem voltar à tela inicial.
+- **Modo Tela Cheia** — barra de navegação Android oculta com immersive mode (reaparecer ao deslizar de baixo).
+- **Feedback Visual** — press animation (scale) em todos os cards e botões; modal de erro para validações.
+
+</details>
+
+---
+
+### 🛠️ Stack Tecnológica
+
+* **Framework:** React Native 0.81.5 + Expo SDK 54
+* **Navegação:** React Navigation 6 (Native Stack)
+* **Animações:** React Native Animated API — fade, slide, spring e pulse
+* **UI:** Tema escuro fosco (`#0D0D10`) + superfícies glassmorphic (`rgba` translúcido)
+* **Tela Cheia:** `expo-navigation-bar` — immersive mode Android
+* **Tipagem:** TypeScript strict mode
+
+---
+
+### 📁 Estrutura do Projeto
+
+```
+mobile/
+├── App.tsx                          # Entry point — StatusBar + immersive mode + Navigator
+├── app.json                         # Config Expo (dark theme, portrait, bundle ID)
+├── babel.config.js
+├── package.json                     # Dependências Expo SDK 54
+├── tsconfig.json
+└── src/
+    ├── types/index.ts               # Interfaces: Game, Review, RootStackParamList
+    ├── theme/index.ts               # Colors, Spacing, Radius, Typography
+    ├── data/mockData.ts             # 8 jogos com avaliações simuladas
+    ├── navigation/
+    │   └── AppNavigator.tsx         # Stack Navigator: Home → GameDetail
+    ├── components/
+    │   ├── ui/                      # Componentes base reutilizáveis
+    │   │   ├── AppText.tsx          # Variantes: h1/h2/h3/body/label/caption
+    │   │   ├── Button.tsx           # Variantes: primary/secondary/ghost/icon
+    │   │   ├── Card.tsx             # Container glassmorphic com press animation
+    │   │   ├── StarRating.tsx       # Modo display (meias estrelas) e input interativo
+    │   │   ├── SearchBar.tsx        # Input com ícone e botão clear
+    │   │   ├── LoadingSpinner.tsx   # Glassmorphic com animação pulse
+    │   │   └── ErrorModal.tsx       # Modal temático para erros de validação
+    │   └── game/
+    │       ├── GameCard.tsx         # Card do grid com imagem + press scale
+    │       └── ReviewItem.tsx       # Avatar com iniciais + estrelas + texto
+    └── screens/
+        ├── HomeScreen.tsx           # Grade 2 colunas + SearchBar + loading state
+        └── GameDetailScreen.tsx     # Detalhe com tabs + prev/next animado
+```
+
+---
+
+### 📋 Pré-requisitos
+
+- **Node.js** 18+
+- **Expo Go** instalado no celular ([Android](https://play.google.com/store/apps/details?id=host.exp.exponent) / [iOS](https://apps.apple.com/app/expo-go/id982107779)) — versão **SDK 54**
+- Celular e computador na **mesma rede Wi-Fi**
+
+---
+
+### 🚀 Instalação e Execução
+
+```bash
+# 1. Entrar na pasta do app mobile
+cd mobile
+
+# 2. Instalar dependências
+npm install
+
+# 3. Sincronizar versões com o SDK 54 (necessário na primeira instalação)
+npx expo install --fix
+
+# 4. Iniciar o servidor de desenvolvimento com cache limpo
+npx expo start --clear
+```
+
+Após o servidor iniciar, **escaneie o QR code** com o Expo Go no celular.
+
+<details>
+<summary><strong>⚠️ Solução de problemas comuns (Clique para expandir)</strong></summary>
+<br>
+
+| Erro | Causa | Solução |
+|---|---|---|
+| `Project is incompatible with this version of Expo Go` | Versão do SDK no `package.json` diverge do Expo Go instalado | Verifique se o Expo Go é SDK 54 e rode `npx expo install --fix` |
+| `Cannot find module 'babel-preset-expo'` | `babel-preset-expo` ausente nas `devDependencies` | `npm install babel-preset-expo` |
+| `TurboModuleRegistry: PlatformConstants could not be found` | Versão do `react-native` incompatível com o Expo Go | `npx expo install --fix && npx expo start --clear` |
+| `ERESOLVE` no npm install | Conflito entre `@types/react` v18 e RN 0.81+ | Atualize `@types/react` para `~19.1.10` nas `devDependencies` |
+
+</details>
 

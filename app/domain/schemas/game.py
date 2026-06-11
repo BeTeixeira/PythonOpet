@@ -10,6 +10,7 @@ class GameCreate(BaseModel):
     developer: str | None = Field(None, max_length=200)
     release_date: date | None = None
     description: str | None = None
+    cover_image_url: str | None = Field(None, max_length=500)
 
 
 class GameUpdate(BaseModel):
@@ -18,6 +19,7 @@ class GameUpdate(BaseModel):
     developer: str | None = None
     release_date: date | None = None
     description: str | None = None
+    cover_image_url: str | None = Field(None, max_length=500)
 
 
 class GameResponse(BaseModel):
@@ -29,4 +31,5 @@ class GameResponse(BaseModel):
     developer: str | None
     release_date: date | None
     description: str | None
+    cover_image_url: str | None
     created_at: datetime

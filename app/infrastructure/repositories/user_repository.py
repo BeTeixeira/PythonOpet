@@ -49,6 +49,10 @@ class UserRepository(AbstractUserRepository):
         await self._session.refresh(user)
         return user
 
+    async def get_by_github_id(self, github_id: str) -> User | None:
+        result = await self._session.execute(select(User).where(User.github_id == github_id))
+        return result.scalar_one_or_none()
+
     async def delete(self, user: User) -> None:
         await self._session.delete(user)
         await self._session.flush()

@@ -2,7 +2,7 @@ import uuid
 
 from fastapi import APIRouter, HTTPException, Query, status
 
-from app.api.dependencies import GameServiceDep
+from app.api.dependencies import AdminUser, GameServiceDep
 from app.domain.schemas.game import GameCreate, GameResponse, GameUpdate
 from app.infrastructure.exceptions import NotFoundError
 
@@ -12,10 +12,14 @@ router = APIRouter(prefix="/games", tags=["games"])
 @router.get("", response_model=list[GameResponse])
 async def list_games(
     service: GameServiceDep,
+    q: str | None = Query(None, description="Search by title, developer or genre"),
     skip: int = Query(0, ge=0),
     limit: int = Query(20, ge=1, le=100),
 ) -> list[GameResponse]:
-    games = await service.list_games(skip=skip, limit=limit)
+    if q and q.strip():
+        games = await service.search_games(q.strip(), skip=skip, limit=limit)
+    else:
+        games = await service.list_games(skip=skip, limit=limit)
     return [GameResponse.model_validate(g) for g in games]
 
 
@@ -29,14 +33,21 @@ async def get_game(game_id: uuid.UUID, service: GameServiceDep) -> GameResponse:
 
 
 @router.post("", response_model=GameResponse, status_code=status.HTTP_201_CREATED)
-async def create_game(data: GameCreate, service: GameServiceDep) -> GameResponse:
+async def create_game(
+    data: GameCreate,
+    service: GameServiceDep,
+    _admin: AdminUser,
+) -> GameResponse:
     game = await service.create_game(data)
     return GameResponse.model_validate(game)
 
 
 @router.patch("/{game_id}", response_model=GameResponse)
 async def update_game(
-    game_id: uuid.UUID, data: GameUpdate, service: GameServiceDep
+    game_id: uuid.UUID,
+    data: GameUpdate,
+    service: GameServiceDep,
+    _admin: AdminUser,
 ) -> GameResponse:
     try:
         game = await service.update_game(game_id, data)
@@ -46,7 +57,11 @@ async def update_game(
 
 
 @router.delete("/{game_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_game(game_id: uuid.UUID, service: GameServiceDep) -> None:
+async def delete_game(
+    game_id: uuid.UUID,
+    service: GameServiceDep,
+    _admin: AdminUser,
+) -> None:
     try:
         await service.delete_game(game_id)
     except NotFoundError as exc:

@@ -18,14 +18,14 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
-    logger.info("Starting up Game Reviews API — env=%s", settings.app_env)
+    logger.info("Starting up Gamestar API — env=%s", settings.app_env)
     yield
-    logger.info("Shutting down Game Reviews API.")
+    logger.info("Shutting down Gamestar API.")
 
 
 app = FastAPI(
-    title="Game Reviews API",
-    description="RESTful API for managing game reviews.",
+    title="Gamestar API",
+    description="RESTful API for the Gamestar game catalogue and reviews platform.",
     version="0.1.0",
     docs_url="/docs",
     redoc_url="/redoc",
