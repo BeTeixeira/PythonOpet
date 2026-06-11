@@ -38,7 +38,7 @@ jobs:
           docker build \
             -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }} \
             -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest \
-            .
+            ./backend
 
       - name: Push Docker Image
         run: |

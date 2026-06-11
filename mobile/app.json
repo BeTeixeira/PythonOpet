@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "Gamestar",
+    "slug": "gamestar",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "backgroundColor": "#0D0D10"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.gamestar.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0D0D10"
+      },
+      "package": "com.gamestar.app"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}

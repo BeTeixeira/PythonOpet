@@ -1,0 +1,248 @@
+import { Game } from '../types';
+
+export const GAMES: Game[] = [
+  {
+    id: 'witcher3',
+    title: 'The Witcher 3: Wild Hunt',
+    developer: 'CD Projekt Red',
+    genre: 'RPG',
+    year: 2015,
+    rating: 4.9,
+    coverImage: 'https://picsum.photos/seed/witcher3/400/600',
+    description:
+      'Uma épica aventura de mundo aberto onde você joga como Geralt de Rívia, um caçador de monstros profissional em busca de sua filha adotiva em um mundo de guerra e destruição.',
+    reviews: [
+      {
+        id: 'r1',
+        author: 'Lucas M.',
+        rating: 5,
+        body: 'O melhor RPG que já joguei. A narrativa é excepcional e o mundo é riquíssimo em detalhes.',
+        date: '2024-03-15',
+      },
+      {
+        id: 'r2',
+        author: 'Ana P.',
+        rating: 5,
+        body: 'Simplesmente perfeito. Horas e horas de conteúdo de qualidade. Impossível largar.',
+        date: '2024-02-10',
+      },
+      {
+        id: 'r3',
+        author: 'Pedro H.',
+        rating: 4,
+        body: 'Incrível, mas o início é um pouco lento. Vale muito a pena persistir.',
+        date: '2024-01-22',
+      },
+    ],
+  },
+  {
+    id: 'rdr2',
+    title: 'Red Dead Redemption 2',
+    developer: 'Rockstar Games',
+    genre: 'Ação-Aventura',
+    year: 2018,
+    rating: 4.8,
+    coverImage: 'https://picsum.photos/seed/rdr2west/400/600',
+    description:
+      'Uma história épica de um foragido da lei no alvorecer da era moderna americana. O mundo mais imersivo e cinematográfico da Rockstar até hoje.',
+    reviews: [
+      {
+        id: 'r4',
+        author: 'Carlos S.',
+        rating: 5,
+        body: 'Arthur Morgan é um dos personagens mais bem escritos da história dos games.',
+        date: '2024-03-01',
+      },
+      {
+        id: 'r5',
+        author: 'Mariana L.',
+        rating: 5,
+        body: 'Uma experiência cinematográfica sem igual. Chorei no final. Obra de arte.',
+        date: '2024-02-20',
+      },
+    ],
+  },
+  {
+    id: 'eldenring',
+    title: 'Elden Ring',
+    developer: 'FromSoftware',
+    genre: 'Action RPG',
+    year: 2022,
+    rating: 4.8,
+    coverImage: 'https://picsum.photos/seed/eldenring/400/600',
+    description:
+      'Explore as Terras Intermediárias em um mundo aberto repleto de segredos e criaturas aterrorizantes, criado em colaboração com George R.R. Martin.',
+    reviews: [
+      {
+        id: 'r6',
+        author: 'Rafael K.',
+        rating: 5,
+        body: 'Difícil mas extremamente recompensador. Cada chefe vencido é uma conquista real.',
+        date: '2024-03-10',
+      },
+      {
+        id: 'r7',
+        author: 'Julia F.',
+        rating: 4,
+        body: 'Obra-prima. A curva de aprendizado é íngreme, mas a sensação de progressão é viciante.',
+        date: '2024-02-05',
+      },
+      {
+        id: 'r8',
+        author: 'Bruno T.',
+        rating: 5,
+        body: 'Melhor souls-like já feito. O mundo aberto funciona perfeitamente.',
+        date: '2024-01-30',
+      },
+    ],
+  },
+  {
+    id: 'godofwar',
+    title: 'God of War: Ragnarök',
+    developer: 'Santa Monica Studio',
+    genre: 'Ação',
+    year: 2022,
+    rating: 4.7,
+    coverImage: 'https://picsum.photos/seed/godofwar/400/600',
+    description:
+      'Kratos e Atreus embarcam em uma jornada épica pelos Nove Reinos em busca de respostas enquanto o Ragnarök se aproxima inevitavelmente.',
+    reviews: [
+      {
+        id: 'r9',
+        author: 'Fernanda C.',
+        rating: 5,
+        body: 'A relação pai e filho é de partir o coração. Combate fluido e cinematográfico.',
+        date: '2024-03-08',
+      },
+      {
+        id: 'r10',
+        author: 'Diego V.',
+        rating: 4,
+        body: 'Superou as expectativas. Atreus teve um desenvolvimento de personagem fantástico.',
+        date: '2024-02-14',
+      },
+    ],
+  },
+  {
+    id: 'cyberpunk',
+    title: 'Cyberpunk 2077',
+    developer: 'CD Projekt Red',
+    genre: 'RPG',
+    year: 2020,
+    rating: 4.2,
+    coverImage: 'https://picsum.photos/seed/cyberpunk/400/600',
+    description:
+      'Um RPG de mundo aberto ambientado em Night City, uma megalópole obcecada por poder e modificações corporais onde você vive uma história intensa como V.',
+    reviews: [
+      {
+        id: 'r11',
+        author: 'Thiago M.',
+        rating: 4,
+        body: 'Após as atualizações, transformou-se em um jogo excelente. Night City é incrível.',
+        date: '2024-03-12',
+      },
+      {
+        id: 'r12',
+        author: 'Camila R.',
+        rating: 5,
+        body: 'A DLC Phantom Liberty é uma das melhores expansões já feitas.',
+        date: '2024-02-28',
+      },
+      {
+        id: 'r13',
+        author: 'Victor N.',
+        rating: 3,
+        body: 'Bom, mas ficou abaixo do hype. Melhorou muito mas ainda tem problemas.',
+        date: '2024-01-15',
+      },
+    ],
+  },
+  {
+    id: 'tlou2',
+    title: 'The Last of Us Part II',
+    developer: 'Naughty Dog',
+    genre: 'Ação-Aventura',
+    year: 2020,
+    rating: 4.5,
+    coverImage: 'https://picsum.photos/seed/tlou2/400/600',
+    description:
+      'Cinco anos após sua jornada pelo Estados Unidos pós-pandêmico, Ellie vive em Jackson, Wyoming — até que um evento brutal desencadeia uma busca implacável.',
+    reviews: [
+      {
+        id: 'r14',
+        author: 'Leticia A.',
+        rating: 5,
+        body: 'Uma obra divisiva mas corajosa. O jogo mais completo em termos de produção que já vi.',
+        date: '2024-03-05',
+      },
+      {
+        id: 'r15',
+        author: 'Guilherme O.',
+        rating: 4,
+        body: 'Narrativa arrojada e gameplay impecável. Não é para todos, mas é arte.',
+        date: '2024-02-18',
+      },
+    ],
+  },
+  {
+    id: 'hollowknight',
+    title: 'Hollow Knight',
+    developer: 'Team Cherry',
+    genre: 'Metroidvania',
+    year: 2017,
+    rating: 4.7,
+    coverImage: 'https://picsum.photos/seed/hollowknight/400/600',
+    description:
+      'Explore as profundezas de Hallownest, um vasto reino arruinado de insetos e heróis. Desafie inimigos mortais, faça aliados e descubra segredos antigos.',
+    reviews: [
+      {
+        id: 'r16',
+        author: 'Roberta G.',
+        rating: 5,
+        body: 'Um indie que envergonha AAAs. Arte, trilha sonora e gameplay perfeitos.',
+        date: '2024-03-20',
+      },
+      {
+        id: 'r17',
+        author: 'Felipe S.',
+        rating: 5,
+        body: 'A melhor relação custo-benefício dos games. Horas e horas de conteúdo incrível.',
+        date: '2024-02-08',
+      },
+    ],
+  },
+  {
+    id: 'hades',
+    title: 'Hades',
+    developer: 'Supergiant Games',
+    genre: 'Roguelike',
+    year: 2020,
+    rating: 4.8,
+    coverImage: 'https://picsum.photos/seed/hadesrogue/400/600',
+    description:
+      'Desafie o deus dos mortos enquanto você foge do Submundo na mais nova aventura de ação roguelike da Supergiant Games, com narrativa que evolui a cada tentativa.',
+    reviews: [
+      {
+        id: 'r18',
+        author: 'Amanda Z.',
+        rating: 5,
+        body: 'Revolucionou o roguelike. A narrativa entre as corridas é genuinamente genial.',
+        date: '2024-03-18',
+      },
+      {
+        id: 'r19',
+        author: 'Leonardo C.',
+        rating: 5,
+        body: 'Impossível parar de jogar. O sistema de boons é viciante e criativo.',
+        date: '2024-02-22',
+      },
+      {
+        id: 'r20',
+        author: 'Patricia W.',
+        rating: 4,
+        body: 'Excelente em quase tudo. A repetitividade pode cansar eventualmente.',
+        date: '2024-01-28',
+      },
+    ],
+  },
+];

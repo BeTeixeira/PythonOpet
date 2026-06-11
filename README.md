@@ -1,249 +1,42 @@
-# Gamestar — Monorepo
+# Gamestar
 
-![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
-![Azure SQL](https://img.shields.io/badge/Azure_SQL-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![React Native](https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![Expo](https://img.shields.io/badge/Expo_SDK_54-000020?style=for-the-badge&logo=expo&logoColor=white)
+Monorepo do projeto Gamestar — plataforma de catálogo e avaliações de jogos.
 
-> Monorepo com **API RESTful** (Python/FastAPI) e **aplicativo mobile** (React Native/Expo) para catálogo e avaliação de jogos, com autenticação GitHub OAuth, RBAC e deploy automático no Azure.
-
----
-
-## 📦 Projetos do Monorepo
-
-| Pasta | Descrição | Stack principal |
-|---|---|---|
-| [`PythonOpet/`](#-api--back-end) | API RESTful back-end | Python 3.11, FastAPI, Azure SQL |
-| [`mobile/`](#-mobile--gamestar-app) | Aplicativo Android/iOS | React Native, Expo SDK 54 |
-
----
-
-## 🔙 API — Back-end
-
-### 📖 Visão Geral
-
-API back-end em **Python 3.11+**, escalável no Azure, aplicando **SOLID** e **Clean Architecture**. Suporta banco de dados **Azure SQL (MSSQL)** em produção e **PostgreSQL** localmente via Docker.
-
-<details>
-<summary><strong>🎯 Funcionalidades (Clique para expandir)</strong></summary>
-<br>
-
-- **Catálogo de jogos** — CRUD completo com busca por título, gênero e desenvolvedora.
-- **Avaliações** — nota (1–10) e resenha textual, uma por usuário por jogo.
-- **Autenticação GitHub OAuth 2.0** — login via conta GitHub, JWT com claim de role.
-- **RBAC** — `admin` tem CRUD total; `user` pode ler, avaliar e comentar.
-
-</details>
-
----
-
-### 🛡️ RBAC — Controle de Acesso
-
-| Ação | `user` | `admin` |
-|---|---|---|
-| Listar / detalhar jogos | ✅ | ✅ |
-| Criar / editar / deletar jogo | ❌ | ✅ |
-| Criar / editar própria avaliação | ✅ | ❌ |
-| Deletar qualquer avaliação | ❌ | ✅ |
-| Editar próprio perfil | ✅ | ✅ |
-| Deletar qualquer usuário | ❌ | ✅ |
-
----
-
-### 🔐 GitHub OAuth Flow
+## Estrutura
 
 ```
-Mobile/Browser → GET /api/v1/auth/github/login-url
-             ← { "url": "https://github.com/login/oauth/authorize?..." }
-
-Mobile abre URL no browser → usuário autoriza no GitHub
-GitHub redireciona → GET /api/v1/auth/github/callback?code=...
-Servidor troca code por token → redireciona para gamestar://auth?token=JWT
-
-App captura deep link → armazena JWT → usuário logado
+/
+├── backend/   # API FastAPI (Python 3.11)
+└── mobile/    # App React Native (Expo)
 ```
 
----
+## Backend
 
-### 🛠️ Stack Tecnológica
-
-* **Linguagem:** Python 3.11+
-* **Framework:** FastAPI — alto desempenho, OpenAPI automático
-* **Banco (produção):** Azure SQL via `mssql+aioodbc` (async)
-* **Banco (local):** PostgreSQL 16 via `asyncpg` + Docker
-* **Migrações:** Alembic (modo assíncrono)
-* **Validação:** Pydantic v2
-* **Autenticação:** GitHub OAuth 2.0 + JWT (HS256)
-* **Padrões:** Clean Architecture + SOLID
-
----
-
-### 📁 Estrutura
-
-```
-PythonOpet/
-├── main.py
-├── pyproject.toml
-├── Dockerfile                       # Multi-stage + ODBC Driver 18
-├── docker-compose.yml
-├── .env.example
-├── app/
-│   ├── core/            config, security, logging
-│   ├── domain/          models, schemas, interfaces (ABCs)
-│   ├── services/        UserService, GameService, ReviewService
-│   ├── infrastructure/  database, repositories, exceptions
-│   └── api/v1/          endpoints: auth, users, games, reviews
-└── migrations/
-    └── versions/        arquivos gerados pelo Alembic
-```
-
----
-
-### ⚙️ Variáveis de Ambiente
-
-| Variável | Descrição |
-|---|---|
-| `SECRET_KEY` | Chave para assinar JWTs |
-| `DATABASE_URL` | URL de conexão (asyncpg local / aioodbc prod) |
-| `GITHUB_CLIENT_ID` | Client ID do OAuth App no GitHub |
-| `GITHUB_CLIENT_SECRET` | Client Secret do OAuth App |
-| `GITHUB_REDIRECT_URI` | Callback URL registrada no GitHub |
-
----
-
-### 🚀 Execução Local
-
-**Com Docker (recomendado):**
 ```bash
-cp .env.example .env
-# edite .env com SECRET_KEY e credenciais GitHub
-docker compose up --build
+cd backend
+cp .env.example .env   # preencher as variáveis
+docker compose up      # sobe API + PostgreSQL
 ```
 
-**Sem Docker:**
+A API ficará disponível em `http://localhost:8000`. Documentação interativa em `/docs`.
+
+Para rodar as migrações separadamente:
+
 ```bash
-pip install -e ".[dev]"
-cp .env.example .env
+cd backend
 alembic upgrade head
-uvicorn main:app --reload
 ```
 
-API disponível em `http://localhost:8000/docs`
-
----
-
-### 🗺️ Endpoints principais
-
-| Método | Rota | Auth |
-|---|---|---|
-| `GET` | `/api/v1/auth/github/login-url` | ❌ |
-| `GET/POST` | `/api/v1/auth/github/callback` | ❌ |
-| `POST` | `/api/v1/auth/token` | ❌ |
-| `GET` | `/api/v1/games?q=` | ❌ |
-| `POST` | `/api/v1/games` | ✅ Admin |
-| `PATCH/DELETE` | `/api/v1/games/{id}` | ✅ Admin |
-| `POST` | `/api/v1/reviews` | ✅ JWT |
-| `GET` | `/health` | ❌ |
-
----
-
-### 🔄 CI/CD — GitHub Actions → Azure
-
-```
-push origin main
-  → Build Docker image
-  → Push para acraula131.azurecr.io
-  → Configura env vars no Azure Web App
-  → Deploy em WEBAPPB
-```
-
-Produção: `https://webappb-cuf4gxhvh6hmb0h3.chilecentral-01.azurewebsites.net/docs`
-
-**Secrets necessários no GitHub:**
-
-| Secret | Descrição |
-|---|---|
-| `AZURE_CREDENTIALS` | JSON do service principal Azure |
-| `ACR_USERNAME` | Admin username do ACR `acraula131` |
-| `ACR_PASSWORD` | Admin password do ACR |
-| `SECRET_KEY` | Chave JWT de produção |
-| `DATABASE_URL` | URL Azure SQL (mssql+aioodbc) |
-| `GITHUB_CLIENT_ID` | OAuth App Client ID |
-| `GITHUB_CLIENT_SECRET` | OAuth App Client Secret |
-
----
-
-## 📱 Mobile — Gamestar App
-
-![Expo SDK](https://img.shields.io/badge/Expo_SDK-54-000020?style=for-the-badge&logo=expo&logoColor=white)
-![React Native](https://img.shields.io/badge/React_Native-0.81.5-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
-![iOS](https://img.shields.io/badge/iOS-000000?style=for-the-badge&logo=apple&logoColor=white)
-
-> Aplicativo de catálogo interativo com tema cinza translúcido, animações spring, navegação sequencial prev/next e RBAC-aware (FAB e botões de edição visíveis apenas para admins).
-
-<details>
-<summary><strong>🎯 Funcionalidades (Clique para expandir)</strong></summary>
-<br>
-
-- **Login** — GitHub OAuth (produção) ou contas demo (desenvolvimento)
-- **Home** — grade 2 colunas, busca em tempo real, FAB de criação (só admin)
-- **Detalhes** — capa em destaque, abas Comentários / Avaliar (aba Avaliar oculta para admins)
-- **Admin UI** — botões editar/deletar no header, badge "ADMIN" na Home
-- **Navegação Prev/Next** — troca de jogo com animação slide sem voltar ao início
-- **Deep link** — `gamestar://auth?token=JWT` para receber o token pós-OAuth
-
-</details>
-
----
-
-### 🛠️ Stack
-
-* **Framework:** React Native 0.81.5 + Expo SDK 54
-* **Navegação:** React Navigation 6 (Native Stack)
-* **Animações:** Animated API — fade, slide, spring
-* **Auth:** `AuthContext` com mock users para demo + OAuth real
-* **Tipagem:** TypeScript strict
-
----
-
-### 📁 Estrutura
-
-```
-mobile/
-├── App.tsx
-├── app.json                  # scheme: "gamestar" para deep link OAuth
-└── src/
-    ├── context/AuthContext.tsx
-    ├── navigation/AppNavigator.tsx
-    ├── screens/
-    │   ├── LoginScreen.tsx
-    │   ├── HomeScreen.tsx
-    │   └── GameDetailScreen.tsx
-    ├── components/ui/
-    └── types/index.ts
-```
-
----
-
-### 🚀 Execução
+## Mobile
 
 ```bash
 cd mobile
 npm install
-npx expo start --clear
+npx expo start
 ```
 
-Escaneie o QR com o **Expo Go** (SDK 54) no celular.
+Leia o QR code no app **Expo Go** (iOS/Android) para rodar no dispositivo.
 
----
+## Deploy
 
-## 🧪 Testes (API)
-
-```bash
-cd PythonOpet
-pytest tests/unit -v
-pytest --cov=app --cov-report=term-missing
-```
+O backend é publicado automaticamente no Azure Web App via GitHub Actions a cada push na branch `main`. Veja `.github/workflows/azure-webapps-node.yml` para detalhes.
