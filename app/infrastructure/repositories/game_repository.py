@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.interfaces.game_repository import AbstractGameRepository
@@ -19,6 +19,23 @@ class GameRepository(AbstractGameRepository):
     async def list_all(self, *, skip: int = 0, limit: int = 20) -> list[Game]:
         result = await self._session.execute(
             select(Game).order_by(Game.title).offset(skip).limit(limit)
+        )
+        return list(result.scalars().all())
+
+    async def search(self, query: str, *, skip: int = 0, limit: int = 20) -> list[Game]:
+        pattern = f"%{query}%"
+        result = await self._session.execute(
+            select(Game)
+            .where(
+                or_(
+                    Game.title.ilike(pattern),
+                    Game.developer.ilike(pattern),
+                    Game.genre.ilike(pattern),
+                )
+            )
+            .order_by(Game.title)
+            .offset(skip)
+            .limit(limit)
         )
         return list(result.scalars().all())
 

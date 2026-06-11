@@ -18,6 +18,13 @@ class Settings(BaseSettings):
     # Database
     database_url: str
 
+    # GitHub OAuth
+    github_client_id: str = ""
+    github_client_secret: str = ""
+    # Local: http://localhost:8000/api/v1/auth/github/callback
+    # Produção: https://webappb-cuf4gxhvh6hmb0h3.chilecentral-01.azurewebsites.net/api/v1/auth/github/callback
+    github_redirect_uri: str = "http://localhost:8000/api/v1/auth/github/callback"
+
     # Logging
     log_level: str = "INFO"
     log_json: bool = False  # True in production for CloudWatch/GCP ingestion

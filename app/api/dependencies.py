@@ -1,3 +1,4 @@
+import uuid
 from typing import Annotated
 
 from fastapi import Depends, HTTPException, status
@@ -5,6 +6,7 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.security import decode_access_token
+from app.domain.models.user import User, UserRole
 from app.infrastructure.database import get_db_session
 from app.infrastructure.repositories import GameRepository, ReviewRepository, UserRepository
 from app.services import GameService, ReviewService, UserService
@@ -31,10 +33,10 @@ UserServiceDep = Annotated[UserService, Depends(get_user_service)]
 GameServiceDep = Annotated[GameService, Depends(get_game_service)]
 
 
-async def get_current_user_id(
+async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
     user_service: UserServiceDep,
-) -> str:
+) -> User:
     credentials_exc = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials.",
@@ -47,7 +49,30 @@ async def get_current_user_id(
             raise credentials_exc
     except ValueError:
         raise credentials_exc
-    return user_id
+
+    user = await user_service._repo.get_by_id(uuid.UUID(user_id))  # noqa: SLF001
+    if not user or not user.is_active:
+        raise credentials_exc
+    return user
+
+
+async def get_current_user_id(
+    current_user: Annotated[User, Depends(get_current_user)],
+) -> str:
+    return str(current_user.id)
+
+
+async def get_current_admin_user(
+    current_user: Annotated[User, Depends(get_current_user)],
+) -> User:
+    if current_user.role != UserRole.admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Administrator access required.",
+        )
+    return current_user
 
 
 CurrentUser = Annotated[str, Depends(get_current_user_id)]
+CurrentUserFull = Annotated[User, Depends(get_current_user)]
+AdminUser = Annotated[User, Depends(get_current_admin_user)]
