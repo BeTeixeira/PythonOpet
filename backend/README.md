@@ -15,8 +15,10 @@
 
 | Pasta | Descrição | Stack principal |
 |---|---|---|
-| [`PythonOpet/`](#-api--back-end) | API RESTful back-end | Python 3.11, FastAPI, Azure SQL |
+| [`backend/`](#-api--back-end) | API RESTful back-end | Python 3.11, FastAPI, SQLite (demo) / Azure SQL (produção) |
 | [`mobile/`](#-mobile--gamestar-app) | Aplicativo Android/iOS | React Native, Expo SDK 54 |
+
+> Para o passo a passo de **como rodar localmente** (modo demonstração, sem Docker/Azure), veja o [README na raiz do projeto](../README.md). Este documento detalha a arquitetura e a configuração de produção.
 
 ---
 
@@ -24,7 +26,7 @@
 
 ### 📖 Visão Geral
 
-API back-end em **Python 3.11+**, escalável no Azure, aplicando **SOLID** e **Clean Architecture**. Suporta banco de dados **Azure SQL (MSSQL)** em produção e **PostgreSQL** localmente via Docker.
+API back-end em **Python 3.11+**, escalável no Azure, aplicando **SOLID** e **Clean Architecture**. Roda com **SQLite** localmente (modo demonstração, zero configuração) e com **Azure SQL (MSSQL)** em produção.
 
 <details>
 <summary><strong>🎯 Funcionalidades (Clique para expandir)</strong></summary>
@@ -71,8 +73,8 @@ App captura deep link → armazena JWT → usuário logado
 
 * **Linguagem:** Python 3.11+
 * **Framework:** FastAPI — alto desempenho, OpenAPI automático
+* **Banco (local / demonstração):** SQLite via `aiosqlite` — arquivo único, sem instalação
 * **Banco (produção):** Azure SQL via `mssql+aioodbc` (async)
-* **Banco (local):** PostgreSQL 16 via `asyncpg` + Docker
 * **Migrações:** Alembic (modo assíncrono)
 * **Validação:** Pydantic v2
 * **Autenticação:** GitHub OAuth 2.0 + JWT (HS256)
@@ -83,7 +85,7 @@ App captura deep link → armazena JWT → usuário logado
 ### 📁 Estrutura
 
 ```
-PythonOpet/
+backend/
 ├── main.py
 ├── pyproject.toml
 ├── Dockerfile                       # Multi-stage + ODBC Driver 18
@@ -115,19 +117,20 @@ PythonOpet/
 
 ### 🚀 Execução Local
 
-**Com Docker (recomendado):**
+**Modo demonstração (SQLite, sem Docker e sem Azure)** — recomendado para rodar e apresentar o projeto:
 ```bash
-cp .env.example .env
-# edite .env com SECRET_KEY e credenciais GitHub
-docker compose up --build
-```
-
-**Sem Docker:**
-```bash
-pip install -e ".[dev]"
-cp .env.example .env
+python -m venv .venv
+.venv\Scripts\activate          # Windows — use "source .venv/bin/activate" no Mac/Linux
+pip install -r requirements.txt
+copy .env.example .env          # Windows — use "cp .env.example .env" no Mac/Linux
 alembic upgrade head
 uvicorn main:app --reload
+```
+
+**Com Docker + PostgreSQL** (ambiente mais próximo de produção — o `docker-compose.yml` já sobrescreve `DATABASE_URL` para apontar para o container do Postgres):
+```bash
+cp .env.example .env
+docker compose up --build
 ```
 
 API disponível em `http://localhost:8000/docs`
@@ -188,12 +191,11 @@ Produção: `https://webappb-cuf4gxhvh6hmb0h3.chilecentral-01.azurewebsites.net/
 <summary><strong>🎯 Funcionalidades (Clique para expandir)</strong></summary>
 <br>
 
-- **Login** — GitHub OAuth (produção) ou contas demo (desenvolvimento)
+- **Login** — modo demonstração com dois botões mock (Usuário / Administrador), instantâneo e 100% offline; sem chamadas à API
 - **Home** — grade 2 colunas, busca em tempo real, FAB de criação (só admin)
 - **Detalhes** — capa em destaque, abas Comentários / Avaliar (aba Avaliar oculta para admins)
 - **Admin UI** — botões editar/deletar no header, badge "ADMIN" na Home
 - **Navegação Prev/Next** — troca de jogo com animação slide sem voltar ao início
-- **Deep link** — `gamestar://auth?token=JWT` para receber o token pós-OAuth
 
 </details>
 
@@ -204,7 +206,7 @@ Produção: `https://webappb-cuf4gxhvh6hmb0h3.chilecentral-01.azurewebsites.net/
 * **Framework:** React Native 0.81.5 + Expo SDK 54
 * **Navegação:** React Navigation 6 (Native Stack)
 * **Animações:** Animated API — fade, slide, spring
-* **Auth:** `AuthContext` com mock users para demo + OAuth real
+* **Auth:** `AuthContext` com usuários mock em memória (modo demonstração, sem rede)
 * **Tipagem:** TypeScript strict
 
 ---
@@ -243,7 +245,7 @@ Escaneie o QR com o **Expo Go** (SDK 54) no celular.
 ## 🧪 Testes (API)
 
 ```bash
-cd PythonOpet
+cd backend
 pytest tests/unit -v
 pytest --cov=app --cov-report=term-missing
 ```

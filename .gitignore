@@ -20,6 +20,10 @@ htmlcov/
 .env
 *.env.local
 
+# ── Local databases (SQLite demo) ───────────────────────
+*.db
+*.db-journal
+
 # ── Node / React Native / Expo ──────────────────────────
 node_modules/
 .expo/
