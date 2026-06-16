@@ -8,19 +8,8 @@ interface AuthContextValue {
   logout: () => void;
 }
 
-const MOCK_ADMIN: AuthUser = {
-  id: 'admin-001',
-  username: 'Administrador',
-  email: 'admin@gamelib.io',
-  role: 'admin',
-};
-
-const MOCK_USER: AuthUser = {
-  id: 'user-001',
-  username: 'Jogador',
-  email: 'jogador@gamelib.io',
-  role: 'user',
-};
+const MOCK_ADMIN: AuthUser = { id: 'admin-001', username: 'Administrador', email: 'admin@gamestar.io', role: 'admin' };
+const MOCK_USER: AuthUser  = { id: 'user-001',  username: 'Jogador',        email: 'jogador@gamestar.io', role: 'user' };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
