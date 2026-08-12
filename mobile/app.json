@@ -23,14 +23,6 @@
     },
     "runtimeVersion": {
       "policy": "appVersion"
-    },
-    "updates": {
-      "url": "https://u.expo.dev/REPLACE_WITH_PROJECT_ID"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "REPLACE_WITH_PROJECT_ID"
-      }
     }
   }
 }
