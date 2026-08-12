@@ -39,9 +39,11 @@ _DEMO_SECRET_KEY = "demo-secret-key-troque-em-producao"
 
 
 def _validate_production_secret(settings: Settings) -> None:
-    if settings.app_env == "production" and settings.secret_key == _DEMO_SECRET_KEY:
+    if settings.app_env == "production" and (
+        settings.secret_key == _DEMO_SECRET_KEY or not settings.secret_key
+    ):
         raise RuntimeError(
-            "SECRET_KEY ainda está com o valor de demonstração. "
+            "SECRET_KEY ausente ou ainda com o valor de demonstração. "
             "Gere uma chave real (ex.: `python -c \"import secrets; print(secrets.token_hex(32))\"`) "
             "e defina SECRET_KEY no ambiente de produção antes de iniciar a API."
         )
