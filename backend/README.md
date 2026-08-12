@@ -252,4 +252,12 @@ pytest tests/unit -v
 pytest --cov=app --cov-report=term-missing
 ```
 
-Os testes de integração (`tests/integration/`, atualmente vazios) esperam um Postgres acessível via `TEST_DATABASE_URL` (padrão: `postgresql+asyncpg://postgres:postgres@localhost:5432/game_reviews_test`). Os testes unitários (`tests/unit/`) não precisam de nenhum banco.
+Os testes de integração (`tests/integration/`, atualmente vazios) e os testes unitários
+(`tests/unit/`) compartilham a mesma fixture de banco (`conftest.py`), que por padrão
+exige um Postgres real acessível via `TEST_DATABASE_URL` (padrão:
+`postgresql+asyncpg://postgres:postgres@localhost:5432/game_reviews_test`). Para rodar os
+testes unitários sem Postgres, use SQLite via variável de ambiente:
+
+```bash
+TEST_DATABASE_URL=sqlite+aiosqlite:///./test.db pytest tests/unit -v
+```
