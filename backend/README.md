@@ -251,3 +251,5 @@ cd backend
 pytest tests/unit -v
 pytest --cov=app --cov-report=term-missing
 ```
+
+Os testes de integração (`tests/integration/`, atualmente vazios) esperam um Postgres acessível via `TEST_DATABASE_URL` (padrão: `postgresql+asyncpg://postgres:postgres@localhost:5432/game_reviews_test`). Os testes unitários (`tests/unit/`) não precisam de nenhum banco.
