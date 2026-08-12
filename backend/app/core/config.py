@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     # Application
     app_env: str = "development"
     app_debug: bool = False
+    cors_allow_origins: str = "http://localhost:8081,http://localhost:19006"
     secret_key: str
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
@@ -28,6 +29,10 @@ class Settings(BaseSettings):
     # Logging
     log_level: str = "INFO"
     log_json: bool = False  # True in production for CloudWatch/GCP ingestion
+
+    @property
+    def cors_allow_origins_list(self) -> list[str]:
+        return [origin.strip() for origin in self.cors_allow_origins.split(",") if origin.strip()]
 
 
 settings = Settings()  # type: ignore[call-arg]
