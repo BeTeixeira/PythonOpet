@@ -13,6 +13,9 @@ class UserService:
     def __init__(self, repository: AbstractUserRepository) -> None:
         self._repo = repository
 
+    async def get_user_or_none(self, user_id: uuid.UUID) -> User | None:
+        return await self._repo.get_by_id(user_id)
+
     async def get_user(self, user_id: uuid.UUID) -> User:
         user = await self._repo.get_by_id(user_id)
         if not user:
