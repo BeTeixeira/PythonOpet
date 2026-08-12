@@ -127,6 +127,8 @@ alembic upgrade head
 uvicorn main:app --reload
 ```
 
+Para builds reprodutíveis, use `pip install -r requirements.lock.txt` (versões travadas). O `requirements.txt` continua sendo a fonte de verdade para ranges mínimos.
+
 **Com Docker + PostgreSQL** (ambiente mais próximo de produção — o `docker-compose.yml` já sobrescreve `DATABASE_URL` para apontar para o container do Postgres):
 ```bash
 cp .env.example .env
