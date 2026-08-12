@@ -35,4 +35,17 @@ class Settings(BaseSettings):
         return [origin.strip() for origin in self.cors_allow_origins.split(",") if origin.strip()]
 
 
+_DEMO_SECRET_KEY = "demo-secret-key-troque-em-producao"
+
+
+def _validate_production_secret(settings: Settings) -> None:
+    if settings.app_env == "production" and settings.secret_key == _DEMO_SECRET_KEY:
+        raise RuntimeError(
+            "SECRET_KEY ainda está com o valor de demonstração. "
+            "Gere uma chave real (ex.: `python -c \"import secrets; print(secrets.token_hex(32))\"`) "
+            "e defina SECRET_KEY no ambiente de produção antes de iniciar a API."
+        )
+
+
 settings = Settings()  # type: ignore[call-arg]
+_validate_production_secret(settings)
