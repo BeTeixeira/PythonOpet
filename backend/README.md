@@ -127,6 +127,8 @@ alembic upgrade head
 uvicorn main:app --reload
 ```
 
+Para builds reprodutíveis, use `pip install -r requirements.lock.txt` (versões travadas). O `requirements.txt` continua sendo a fonte de verdade para ranges mínimos.
+
 **Com Docker + PostgreSQL** (ambiente mais próximo de produção — o `docker-compose.yml` já sobrescreve `DATABASE_URL` para apontar para o container do Postgres):
 ```bash
 cp .env.example .env
@@ -248,4 +250,14 @@ Escaneie o QR com o **Expo Go** (SDK 54) no celular.
 cd backend
 pytest tests/unit -v
 pytest --cov=app --cov-report=term-missing
+```
+
+Os testes de integração (`tests/integration/`, atualmente vazios) e os testes unitários
+(`tests/unit/`) compartilham a mesma fixture de banco (`conftest.py`), que por padrão
+exige um Postgres real acessível via `TEST_DATABASE_URL` (padrão:
+`postgresql+asyncpg://postgres:postgres@localhost:5432/game_reviews_test`). Para rodar os
+testes unitários sem Postgres, use SQLite via variável de ambiente:
+
+```bash
+TEST_DATABASE_URL=sqlite+aiosqlite:///./test.db pytest tests/unit -v
 ```

@@ -50,7 +50,7 @@ async def get_current_user(
     except ValueError:
         raise credentials_exc
 
-    user = await user_service._repo.get_by_id(uuid.UUID(user_id))  # noqa: SLF001
+    user = await user_service.get_user_or_none(uuid.UUID(user_id))
     if not user or not user.is_active:
         raise credentials_exc
     return user

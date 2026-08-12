@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     # Application
     app_env: str = "development"
     app_debug: bool = False
+    cors_allow_origins: str = "http://localhost:8081,http://localhost:19006"
     secret_key: str
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
@@ -29,5 +30,24 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     log_json: bool = False  # True in production for CloudWatch/GCP ingestion
 
+    @property
+    def cors_allow_origins_list(self) -> list[str]:
+        return [origin.strip() for origin in self.cors_allow_origins.split(",") if origin.strip()]
+
+
+_DEMO_SECRET_KEY = "demo-secret-key-troque-em-producao"
+
+
+def _validate_production_secret(settings: Settings) -> None:
+    if settings.app_env == "production" and (
+        settings.secret_key == _DEMO_SECRET_KEY or not settings.secret_key
+    ):
+        raise RuntimeError(
+            "SECRET_KEY ausente ou ainda com o valor de demonstração. "
+            "Gere uma chave real (ex.: `python -c \"import secrets; print(secrets.token_hex(32))\"`) "
+            "e defina SECRET_KEY no ambiente de produção antes de iniciar a API."
+        )
+
 
 settings = Settings()  # type: ignore[call-arg]
+_validate_production_secret(settings)
