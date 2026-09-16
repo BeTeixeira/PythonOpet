@@ -1,11 +1,14 @@
 import uuid
 
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.interfaces.review_repository import AbstractReviewRepository
 from app.domain.models.review import Review
 from app.domain.schemas.review import ReviewCreate, ReviewUpdate
+
+_WITH_USER = selectinload(Review.user)
 
 
 class ReviewRepository(AbstractReviewRepository):
@@ -14,7 +17,7 @@ class ReviewRepository(AbstractReviewRepository):
 
     async def get_by_id(self, review_id: uuid.UUID) -> Review | None:
         result = await self._session.execute(
-            select(Review).where(Review.id == review_id)
+            select(Review).options(_WITH_USER).where(Review.id == review_id)
         )
         return result.scalar_one_or_none()
 
@@ -23,6 +26,7 @@ class ReviewRepository(AbstractReviewRepository):
     ) -> list[Review]:
         result = await self._session.execute(
             select(Review)
+            .options(_WITH_USER)
             .where(Review.game_id == game_id)
             .order_by(Review.created_at.desc())
             .offset(skip)
@@ -35,6 +39,7 @@ class ReviewRepository(AbstractReviewRepository):
     ) -> list[Review]:
         result = await self._session.execute(
             select(Review)
+            .options(_WITH_USER)
             .where(Review.user_id == user_id)
             .order_by(Review.created_at.desc())
             .offset(skip)
@@ -51,15 +56,19 @@ class ReviewRepository(AbstractReviewRepository):
         )
         self._session.add(review)
         await self._session.flush()
-        await self._session.refresh(review)
-        return review
+        result = await self._session.execute(
+            select(Review).options(_WITH_USER).where(Review.id == review.id)
+        )
+        return result.scalar_one()
 
     async def update(self, review: Review, data: ReviewUpdate) -> Review:
         for field, value in data.model_dump(exclude_unset=True).items():
             setattr(review, field, value)
         await self._session.flush()
-        await self._session.refresh(review)
-        return review
+        result = await self._session.execute(
+            select(Review).options(_WITH_USER).where(Review.id == review.id)
+        )
+        return result.scalar_one()
 
     async def delete(self, review: Review) -> None:
         await self._session.delete(review)
