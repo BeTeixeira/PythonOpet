@@ -5,10 +5,11 @@ Monorepo do projeto Gamestar — plataforma de catálogo e avaliações de jogos
 ```
 /
 ├── backend/   # API FastAPI (Python 3.11)
-└── mobile/    # App React Native (Expo)
+├── Frontapp/  # App mobile oficial (Expo SDK 57 + Expo Router), ligado à API
+└── mobile/    # App antigo (obsoleto — substituído pelo Frontapp)
 ```
 
-> 🎮 **Modo demonstração:** por padrão, tanto a API quanto o app mobile rodam **sem nenhuma conexão externa** (sem Docker, sem Azure, sem internet). A API usa um arquivo SQLite local e o app mobile usa dados fictícios em memória — ideal para abrir o projeto, mostrar a tela de documentação (`/docs`) e navegar pelo app numa apresentação. A lógica de produção (Azure SQL, GitHub OAuth, deploy) continua no projeto, só comentada/desligada — veja [Modo produção](#-modo-produção-referência).
+> 🎮 **Modo demonstração:** por padrão, a API roda **sem nenhuma conexão externa** (sem Docker, sem Azure, sem internet), usando um arquivo SQLite local, e o app conversa com essa API na sua rede — ideal para abrir o projeto, mostrar a tela de documentação (`/docs`) e navegar pelo app numa apresentação. A lógica de produção (Azure SQL, GitHub OAuth, deploy) continua no projeto, só comentada/desligada — veja [Modo produção](#-modo-produção-referência).
 
 ---
 
@@ -75,30 +76,53 @@ Abra no navegador: **http://localhost:8000/docs** — é a documentação intera
 
 Para parar a API, vá no terminal e pressione `Ctrl+C`.
 
+### Dados de demonstração (admin + jogos)
+
+A API não tem rota para virar administrador, e só admin cadastra jogos. Para ter
+um banco local com dados, com a API rodando, em **outro terminal** (com o `.venv` ativo):
+
+```bash
+cd backend
+
+# Cria o admin local admin@example.com / admin12345 (ou promove um email existente:
+# python create_admin.py --email voce@exemplo.com --password SuaSenha123)
+python create_admin.py
+
+# Cadastra 13 jogos com capa (PowerShell)
+.\seed_games.ps1   -Email admin@example.com -Password admin12345
+.\seed_extra.ps1   -Email admin@example.com -Password admin12345
+.\update_games.ps1 -Email admin@example.com -Password admin12345
+```
+
 ---
 
 ## 📱 2. Rodando o app mobile
 
-O app mobile roda **totalmente offline**: login, lista de jogos, avaliações — tudo com dados fictícios guardados em memória, sem chamar a API nem precisar dela rodando. É só para fins de demonstração visual; nada é salvo entre uma execução e outra.
-
-Em um **novo terminal** (deixe a API rodando no outro, se quiser, mas não é obrigatório):
+O app oficial fica em **`Frontapp/`** e usa a API de verdade (login, catálogo,
+busca e comentários). Para o celular conseguir acessar a API, inicie-a escutando
+na rede:
 
 ```bash
-cd mobile
+cd backend
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+
+Em um **novo terminal**:
+
+```bash
+cd Frontapp
 npm install
 npx expo start
 ```
 
 Vai aparecer um **QR code** no terminal. Para testar:
 
-- **No celular:** abra o app **Expo Go** e escaneie o QR code (Android: opção de escanear dentro do próprio app; iOS: pela câmera nativa).
-- **No emulador Android:** com o terminal do Expo aberto, pressione `a`.
-- **No navegador:** pressione `w` (algumas telas/animações podem não funcionar 100% no modo web).
+- **No celular:** abra o app **Expo Go** e escaneie o QR code (Android: opção de escanear dentro do próprio app; iOS: pela câmera nativa). O Expo Go precisa ser do SDK 57 (o da loja já é).
+- **No emulador Android:** com o terminal do Expo aberto, pressione `a` (se o Expo Go do emulador estiver desatualizado, o Expo oferece instalar a versão certa).
+- **No navegador:** pressione `w`.
 
-Na tela inicial do app, toque em **"Entrar como Usuário"** ou **"Entrar como Administrador"** — o login é instantâneo (não faz nenhuma requisição de rede) e mostra as funcionalidades de cada papel (RBAC):
-
-- **Usuário:** navega pelo catálogo, lê e escreve avaliações.
-- **Administrador:** vê o badge "ADMIN" e os botões de criar/editar/remover jogos (ações sem efeito real, pois é modo demonstração).
+Crie uma conta na própria tela de login (ou entre com o admin local). Estrutura
+e o que ainda não vem da API: [`Frontapp/README.md`](Frontapp/README.md).
 
 ---
 
@@ -115,14 +139,14 @@ backend/
 │   └── api/v1/            endpoints: auth, users, games, reviews
 └── migrations/             arquivos do Alembic
 
-mobile/
-├── App.tsx
+Frontapp/
+├── app/                   telas (Expo Router): login, catálogo, minha lista,
+│                          amigos, perfil, jogo/[id]
 └── src/
-    ├── context/AuthContext.tsx   # login mockado (sem rede)
-    ├── data/mockData.ts          # catálogo de jogos fictício
-    ├── navigation/AppNavigator.tsx
-    ├── screens/                  Login, Home, GameDetail
-    └── components/
+    ├── services/api.ts    cliente HTTP da API
+    ├── context/           Auth, Games, Library (estado global)
+    ├── components/
+    └── theme/             cores claro/escuro
 ```
 
 ---
@@ -149,6 +173,9 @@ O projeto também está preparado para rodar com banco **Azure SQL**, autentica�
 
 ```bash
 cd backend
-pytest tests/unit -v
+pytest -v                                   # unitários + integração (SQLite em memória)
 pytest --cov=app --cov-report=term-missing
 ```
+
+Não precisa de Docker nem Postgres. Para rodar contra Postgres, defina
+`TEST_DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/game_reviews_test`.

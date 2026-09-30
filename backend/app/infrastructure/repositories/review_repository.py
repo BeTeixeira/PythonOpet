@@ -1,12 +1,14 @@
 import uuid
 
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.interfaces.review_repository import AbstractReviewRepository
 from app.domain.models.review import Review
 from app.domain.schemas.review import ReviewCreate, ReviewUpdate
+from app.infrastructure.exceptions import ConflictError
 
 _WITH_USER = selectinload(Review.user)
 
@@ -55,7 +57,11 @@ class ReviewRepository(AbstractReviewRepository):
             body=data.body,
         )
         self._session.add(review)
-        await self._session.flush()
+        try:
+            await self._session.flush()
+        except IntegrityError as exc:
+            # uq_user_game_review: o usuário já avaliou este jogo (use PATCH para editar)
+            raise ConflictError("You have already reviewed this game.") from exc
         result = await self._session.execute(
             select(Review).options(_WITH_USER).where(Review.id == review.id)
         )
