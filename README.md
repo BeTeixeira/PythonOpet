@@ -136,7 +136,7 @@ backend/
 │   ├── domain/            models, schemas, interfaces
 │   ├── services/          regras de negócio
 │   ├── infrastructure/    banco de dados, repositórios
-│   └── api/v1/            endpoints: auth, users, games, reviews
+│   └── api/v1/            endpoints: auth, users, games, reviews, library, friends
 └── migrations/             arquivos do Alembic
 
 Frontapp/

@@ -96,7 +96,7 @@ backend/
 │   ├── domain/          models, schemas, interfaces (ABCs)
 │   ├── services/        UserService, GameService, ReviewService
 │   ├── infrastructure/  database, repositories, exceptions
-│   └── api/v1/          endpoints: auth, users, games, reviews
+│   └── api/v1/          endpoints: auth, users, games, reviews, library, friends
 └── migrations/
     └── versions/        arquivos gerados pelo Alembic
 ```
@@ -150,6 +150,13 @@ API disponível em `http://localhost:8000/docs`
 | `POST` | `/api/v1/games` | ✅ Admin |
 | `PATCH/DELETE` | `/api/v1/games/{id}` | ✅ Admin |
 | `POST` | `/api/v1/reviews` | ✅ JWT |
+| `GET` | `/api/v1/library` — "Minha lista" do usuário logado | ✅ JWT |
+| `PUT/DELETE` | `/api/v1/library/{game_id}` — define/remove o status (`completed`, `playing`, `plan_to_play`, `disliked`) | ✅ JWT |
+| `GET` | `/api/v1/friends` — amizades aceitas | ✅ JWT |
+| `GET/POST` | `/api/v1/friends/requests` — pedidos pendentes / enviar pedido (`{"username": ...}`) | ✅ JWT |
+| `POST` | `/api/v1/friends/requests/{id}/accept` — só quem recebeu | ✅ JWT |
+| `DELETE` | `/api/v1/friends/requests/{id}` — recusar ou cancelar | ✅ JWT |
+| `DELETE` | `/api/v1/friends/{user_id}` — desfazer amizade | ✅ JWT |
 | `GET` | `/health` | ❌ |
 
 ---

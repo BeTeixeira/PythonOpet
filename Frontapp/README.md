@@ -2,7 +2,7 @@
 
 App mobile do GameStar, feito com **Expo SDK 57** e **Expo Router** (navegação
 por arquivos). Conversa com a API FastAPI da pasta `backend/`: login, cadastro,
-catálogo de jogos, busca e comentários/notas vêm do backend.
+catálogo de jogos, busca, comentários/notas, "Minha lista" e amigos vêm do backend.
 
 ## Como rodar
 
@@ -42,7 +42,7 @@ app/                    ← cada arquivo aqui é uma TELA (rota)
   login.tsx               Login / cadastro                → rota "/login"
   index.tsx               Catálogo + busca                → rota "/"
   biblioteca.tsx          Minha lista (filtros)           → rota "/biblioteca"
-  amigos.tsx              Lista de amigos                 → rota "/amigos"
+  amigos.tsx              Amigos, pedidos e adicionar     → rota "/amigos"
   perfil.tsx              Dados da conta + sair           → rota "/perfil"
   jogo/[id].tsx           Detalhe do jogo + comentários   → rota "/jogo/<id>"
 
@@ -52,12 +52,11 @@ src/
   context/
     AuthContext.tsx       login, cadastro, logout, usuário logado
     GamesContext.tsx      catálogo de jogos (GET /api/v1/games)
-    LibraryContext.tsx    "Minha lista": suas avaliações + status dos jogos
+    LibraryContext.tsx    "Minha lista": status dos jogos (/library) + suas avaliações
   theme/
     colors.ts             paleta de cores (light/dark)
     ThemeContext.tsx      lógica do toggle claro/escuro
-  data/
-    friends.ts            dados dos amigos (ainda fictícios, ver abaixo)
+  utils/confirm.ts        confirmação antes de excluir + formatar datas
   components/
     TopBar.tsx            barra superior com os ícones de navegação
     SearchBar.tsx         campo de busca
@@ -71,26 +70,21 @@ src/
 
 | Funcionalidade                     | Situação hoje                                                  |
 | ---------------------------------- | -------------------------------------------------------------- |
-| Amigos / solicitações pendentes    | dados fictícios em `src/data/friends.ts`                        |
-| Status na "Minha lista" (completo, jogando...) | guardado só em memória (`LibraryContext.tsx`) — some ao fechar o app |
-| Nota dos especialistas             | aparece como "Em breve" no detalhe do jogo                      |
+| Nota dos especialistas             | aparece como "Em breve" no detalhe do jogo (papel de especialista ainda não existe) |
 | Sessão de login                    | só em memória — fechar o app pede login de novo                 |
-
-Quando os endpoints existirem, basta trocar esses pontos por chamadas em
-`src/services/api.ts` — as telas não precisam mudar.
 
 ## Onde editar cada coisa
 
 | Quero mudar...                              | Arquivo                                  |
 | -------------------------------------------- | ----------------------------------------- |
-| Nome/info dos amigos                         | `src/data/friends.ts`                     |
+| Mensagens de erro da tela de amigos          | `ERROR_MESSAGES` no topo de `app/amigos.tsx` |
 | Ícones (Ionicons)                            | qualquer `<Ionicons name="..." />` — trocar o `name` já troca o ícone. Lista completa: https://icons.expo.fyi |
 | Cores do app (claro/escuro)                  | `src/theme/colors.ts`                     |
 | Texto fixo de tela (títulos, placeholders)   | procure o comentário `// TEXTO EDITÁVEL` no arquivo da tela em `app/` |
 | Filtros da tela "Minha lista"                | array `FILTERS` no topo de `app/biblioteca.tsx` |
 | Rótulos dos status (COMPLETO, JOGANDO...)    | `STATUS_LABELS` em `src/context/LibraryContext.tsx` |
 
-Jogos, capas e comentários vêm da API — edite pelo backend (`/docs`).
+Jogos, capas, comentários, amigos e a "Minha lista" vêm da API — edite pelo backend (`/docs`).
 
 ## Como adicionar navegação entre telas
 

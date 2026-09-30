@@ -37,6 +37,13 @@ export function setAuthToken(token: string | null): void {
   _token = token;
 }
 
+// Erro HTTP da API; `status` permite tratar casos específicos (ex: 404, 409) na tela.
+export class ApiError extends Error {
+  constructor(message: string, public status: number) {
+    super(message);
+  }
+}
+
 // FastAPI devolve erros como { detail: "..." } ou, em validação, { detail: [{ msg }] }
 function errorMessage(err: any, status: number): string {
   const detail = err?.detail;
@@ -62,7 +69,7 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
 
   if (!res.ok) {
     const err = await res.json().catch(() => null);
-    throw new Error(errorMessage(err, res.status));
+    throw new ApiError(errorMessage(err, res.status), res.status);
   }
 
   if (res.status === 204) return undefined as T;
@@ -84,7 +91,7 @@ export async function loginWithPassword(email: string, password: string): Promis
   if (!res.ok) {
     if (res.status === 401) throw new Error("Email ou senha incorretos.");
     const err = await res.json().catch(() => null);
-    throw new Error(errorMessage(err, res.status));
+    throw new ApiError(errorMessage(err, res.status), res.status);
   }
   const data = await res.json();
   return data.access_token as string;
@@ -93,6 +100,7 @@ export async function loginWithPassword(email: string, password: string): Promis
 export const api = {
   get: <T>(path: string) => request<T>("GET", path),
   post: <T>(path: string, body: unknown) => request<T>("POST", path, body),
+  put: <T>(path: string, body: unknown) => request<T>("PUT", path, body),
   patch: <T>(path: string, body: unknown) => request<T>("PATCH", path, body),
   delete: (path: string) => request<void>("DELETE", path),
 };

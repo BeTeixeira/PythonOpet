@@ -64,6 +64,37 @@ export type ApiReview = {
   updated_at: string;
 };
 
+// Status de um jogo na "Minha lista" (mesmos valores do backend)
+export type LibraryStatus = "completed" | "playing" | "plan_to_play" | "disliked";
+
+export type ApiLibraryEntry = {
+  game_id: string;
+  status: LibraryStatus;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ApiFriendUser = { id: string; username: string };
+
+export type ApiFriend = {
+  friendship_id: string;
+  user: ApiFriendUser;
+  since: string;
+};
+
+export type ApiFriendRequest = {
+  id: string;
+  direction: "incoming" | "outgoing"; // incoming = recebido (pode aceitar)
+  user: ApiFriendUser;
+  created_at: string;
+};
+
+export type ApiFriendRequestResult = {
+  id: string;
+  status: "pending" | "accepted"; // accepted: o outro já tinha pedido, virou amizade na hora
+  user: ApiFriendUser;
+};
+
 // ── Conversões ─────────────────────────────────────────
 
 export function mapApiGame(g: ApiGame): Game {

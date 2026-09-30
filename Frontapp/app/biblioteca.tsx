@@ -13,7 +13,7 @@ import FilterPills from "../src/components/FilterPills";
 // AVALIADO / NÃO AVALIADO / NÃO GOSTEI.
 //
 // - COMPLETO, JOGANDO, JOGAR DEPOIS e NÃO GOSTEI: status escolhido na
-//   tela do jogo (ainda só em memória — veja LibraryContext.tsx).
+//   tela do jogo (salvo na API: /api/v1/library).
 // - AVALIADO: jogos em que você deixou comentário/nota (vem da API).
 // - NÃO AVALIADO: jogos da sua lista que você ainda não avaliou.
 
@@ -21,12 +21,12 @@ type Filter = LibraryStatus | "avaliado" | "nao_avaliado";
 
 // TEXTO EDITÁVEL — rótulos dos filtros
 const FILTERS: { value: Filter; label: string }[] = [
-  { value: "completo", label: STATUS_LABELS.completo },
-  { value: "jogando", label: STATUS_LABELS.jogando },
-  { value: "jogar_depois", label: STATUS_LABELS.jogar_depois },
+  { value: "completed", label: STATUS_LABELS.completed },
+  { value: "playing", label: STATUS_LABELS.playing },
+  { value: "plan_to_play", label: STATUS_LABELS.plan_to_play },
   { value: "avaliado", label: "AVALIADO" },
   { value: "nao_avaliado", label: "NÃO AVALIADO" },
-  { value: "nao_gostei", label: STATUS_LABELS.nao_gostei },
+  { value: "disliked", label: STATUS_LABELS.disliked },
 ];
 
 export default function Biblioteca() {
@@ -34,7 +34,7 @@ export default function Biblioteca() {
   const router = useRouter();
   const { games } = useGames();
   const { statuses, myReviewFor } = useLibrary();
-  const [filter, setFilter] = useState<Filter>("completo");
+  const [filter, setFilter] = useState<Filter>("completed");
 
   const filteredGames = useMemo(
     () =>

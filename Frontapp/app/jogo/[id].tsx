@@ -9,7 +9,6 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
-  Alert,
   StyleSheet,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -24,6 +23,7 @@ import { ApiReview, Review, mapApiReview, starsToApiRating } from "../../src/typ
 import TopBar from "../../src/components/TopBar";
 import StarRating from "../../src/components/StarRating";
 import FilterPills from "../../src/components/FilterPills";
+import { confirmAction, formatDate } from "../../src/utils/confirm";
 
 // Tela de Detalhe do jogo.
 // Rota dinâmica: o nome do arquivo "[id].tsx" vira um parâmetro.
@@ -35,23 +35,6 @@ const STATUS_OPTIONS = (Object.keys(STATUS_LABELS) as LibraryStatus[]).map((valu
 }));
 
 const MIN_COMMENT_LENGTH = 10;
-
-function formatDate(date: string) {
-  const [y, m, d] = date.split("-");
-  return `${d}/${m}/${y}`;
-}
-
-// Confirmação que funciona no celular e no navegador
-function confirmAction(message: string, onConfirm: () => void) {
-  if (Platform.OS === "web") {
-    if (window.confirm(message)) onConfirm();
-    return;
-  }
-  Alert.alert("Confirmar", message, [
-    { text: "Cancelar", style: "cancel" },
-    { text: "Excluir", style: "destructive", onPress: onConfirm },
-  ]);
-}
 
 export default function DetalheJogo() {
   const { colors } = useAppTheme();
@@ -67,6 +50,7 @@ export default function DetalheJogo() {
   const [reviewsLoading, setReviewsLoading] = useState(true);
   const [reviewsError, setReviewsError] = useState<string | null>(null);
   const [showBreakdown, setShowBreakdown] = useState(false);
+  const [statusError, setStatusError] = useState<string | null>(null);
 
   const [formOpen, setFormOpen] = useState(false);
   const [formRating, setFormRating] = useState(0);
@@ -199,8 +183,14 @@ export default function DetalheJogo() {
                 options={STATUS_OPTIONS}
                 selected={statuses[game.id]}
                 // tocar no status já selecionado remove o jogo da lista
-                onSelect={(s) => setStatus(game.id, statuses[game.id] === s ? null : s)}
+                onSelect={(s) => {
+                  setStatusError(null);
+                  setStatus(game.id, statuses[game.id] === s ? null : s).catch((e) =>
+                    setStatusError(e.message ?? "Não foi possível atualizar sua lista.")
+                  );
+                }}
               />
+              {statusError && <Text style={styles.error}>{statusError}</Text>}
 
               {/* TEXTO EDITÁVEL */}
               <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>Sinopse do jogo</Text>
