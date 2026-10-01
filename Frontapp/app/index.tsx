@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { View, Text, FlatList, ActivityIndicator, RefreshControl, TouchableOpacity, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
+import Screen from "../src/components/Screen";
 import { useAppTheme } from "../src/theme/ThemeContext";
 import { useGames } from "../src/context/GamesContext";
 import { Game } from "../src/types";
@@ -49,7 +49,7 @@ export default function Home() {
   };
 
   return (
-    <SafeAreaView style={[styles.screen, { backgroundColor: colors.background }]} edges={["top"]}>
+    <Screen>
       <TopBar />
 
       <View style={styles.content}>
@@ -80,12 +80,11 @@ export default function Home() {
           )}
         />
       </View>
-    </SafeAreaView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1 },
   content: { flex: 1, padding: 12 },
   sectionTitle: { fontSize: 13, fontWeight: "600", marginBottom: 8 },
   empty: { alignItems: "center", gap: 10, marginTop: 16 },

@@ -5,12 +5,11 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
+  ScrollView,
   StyleSheet,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { SafeAreaView } from "react-native-safe-area-context";
+import Screen from "../src/components/Screen";
 import { useAppTheme } from "../src/theme/ThemeContext";
 import { useAuth } from "../src/context/AuthContext";
 
@@ -59,11 +58,9 @@ export default function Login() {
   ];
 
   return (
-    <SafeAreaView style={[styles.screen, { backgroundColor: colors.background }]}>
-      <KeyboardAvoidingView
-        style={styles.content}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
+    <Screen>
+      {/* Rolável: com o teclado aberto em telas pequenas, campos e botão continuam alcançáveis */}
+      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <View style={styles.logoArea}>
           <View style={[styles.logoIcon, { backgroundColor: colors.card, borderColor: colors.cardBorder }]}>
             <Ionicons name="game-controller" size={44} color={colors.accent} />
@@ -130,14 +127,13 @@ export default function Login() {
             <Text style={{ color: colors.accent, fontWeight: "600" }}>{isCadastro ? "Entrar" : "Cadastre-se"}</Text>
           </Text>
         </TouchableOpacity>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+      </ScrollView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1 },
-  content: { flex: 1, justifyContent: "center", paddingHorizontal: 24, gap: 10 },
+  content: { flexGrow: 1, justifyContent: "center", paddingHorizontal: 24, paddingVertical: 24, gap: 10 },
   logoArea: { alignItems: "center", gap: 6, marginBottom: 20 },
   logoIcon: {
     width: 84,

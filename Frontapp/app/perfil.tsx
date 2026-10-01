@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { SafeAreaView } from "react-native-safe-area-context";
+import Screen from "../src/components/Screen";
 import { useAppTheme } from "../src/theme/ThemeContext";
 import { useAuth } from "../src/context/AuthContext";
 import { useLibrary } from "../src/context/LibraryContext";
@@ -18,7 +18,7 @@ export default function Perfil() {
   const initials = user.username.slice(0, 2).toUpperCase();
 
   return (
-    <SafeAreaView style={[styles.screen, { backgroundColor: colors.background }]} edges={["top"]}>
+    <Screen>
       <TopBar />
 
       <View style={styles.content}>
@@ -54,12 +54,11 @@ export default function Perfil() {
           <Text style={{ color: "#E05252", fontSize: 13, fontWeight: "600" }}>Sair</Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1 },
   content: { flex: 1, padding: 12, gap: 12 },
   card: { borderWidth: 1, borderRadius: 12, padding: 16, alignItems: "center", gap: 4 },
   avatar: { width: 64, height: 64, borderRadius: 32, alignItems: "center", justifyContent: "center", marginBottom: 6 },

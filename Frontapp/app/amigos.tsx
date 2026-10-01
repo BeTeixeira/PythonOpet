@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
+import Screen from "../src/components/Screen";
 import { useAppTheme } from "../src/theme/ThemeContext";
 import { ApiError, api } from "../src/services/api";
 import { ApiFriend, ApiFriendRequest, ApiFriendRequestResult } from "../src/types";
@@ -182,7 +182,7 @@ export default function Amigos() {
     : "Nenhum pedido pendente.";
 
   return (
-    <SafeAreaView style={[styles.screen, { backgroundColor: colors.background }]} edges={["top"]}>
+    <Screen>
       <TopBar />
 
       <View style={styles.content}>
@@ -246,12 +246,11 @@ export default function Amigos() {
           }
         />
       </View>
-    </SafeAreaView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1 },
   content: { flex: 1, padding: 12 },
   addRow: { flexDirection: "row", gap: 8, marginBottom: 6 },
   input: { flex: 1, borderWidth: 1, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 8, fontSize: 13 },

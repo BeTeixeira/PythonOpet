@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
+import Screen from "../src/components/Screen";
 import { useAppTheme } from "../src/theme/ThemeContext";
 import { useGames } from "../src/context/GamesContext";
 import { LibraryStatus, STATUS_LABELS, useLibrary } from "../src/context/LibraryContext";
@@ -47,7 +47,7 @@ export default function Biblioteca() {
   );
 
   return (
-    <SafeAreaView style={[styles.screen, { backgroundColor: colors.background }]} edges={["top"]}>
+    <Screen>
       <TopBar />
 
       <View style={styles.content}>
@@ -75,11 +75,10 @@ export default function Biblioteca() {
           }
         />
       </View>
-    </SafeAreaView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1 },
   content: { flex: 1, padding: 12 },
 });
