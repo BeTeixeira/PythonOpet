@@ -15,10 +15,17 @@
       "supportsTablet": false
     },
     "android": {
-      "package": "com.gamestar.app"
+      "package": "com.gamestar.frontapp"
     },
     "web": {
       "bundler": "metro"
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "0a3ba86f-9501-45b3-ba96-063fabde7419"
+      }
+    },
+    "owner": "cdobruski"
   }
 }

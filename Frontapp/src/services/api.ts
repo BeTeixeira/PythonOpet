@@ -53,7 +53,11 @@ function errorMessage(err: any, status: number): string {
 }
 
 async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    // ngrok grátis mostra uma página de aviso para navegadores; este cabeçalho pula o aviso
+    "ngrok-skip-browser-warning": "1",
+  };
   if (_token) headers["Authorization"] = `Bearer ${_token}`;
 
   let res: Response;
@@ -82,7 +86,10 @@ export async function loginWithPassword(email: string, password: string): Promis
   try {
     res = await fetch(`${BASE_URL}/api/v1/auth/token`, {
       method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "ngrok-skip-browser-warning": "1",
+      },
       body: body.toString(),
     });
   } catch {

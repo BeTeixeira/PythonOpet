@@ -34,6 +34,28 @@ arquivo `.env` nesta pasta com:
 EXPO_PUBLIC_API_URL=http://192.168.0.10:8000
 ```
 
+## APK para instalar no celular (acesso de qualquer lugar)
+
+O APK chama a API pelo túnel **ngrok** (endereço fixo definido em `eas.json`,
+perfil `preview`), então funciona fora de casa, até no 4G — desde que o PC
+esteja ligado com a API e o ngrok rodando:
+
+```powershell
+cd backend
+.\start_remote.ps1      # abre a API e o ngrok em duas janelas
+```
+
+Para gerar um APK novo (ex: depois de mudar o app), com o EAS logado na conta:
+
+```bash
+cd Frontapp
+npx eas-cli build --profile preview --platform android
+```
+
+O link de download aparece no terminal e em https://expo.dev (projeto
+`gamestar-app`). O endereço da API fica gravado no APK na hora do build: se
+o endereço do ngrok mudar, gere o APK de novo.
+
 ## Estrutura de pastas
 
 ```
