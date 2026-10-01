@@ -6,9 +6,12 @@ import { Platform } from "react-native";
 //
 // Endereço da API, em ordem de prioridade:
 //   1) variável EXPO_PUBLIC_API_URL (ex: EXPO_PUBLIC_API_URL=http://192.168.0.10:8000)
-//   2) no celular (Expo Go / dev build): mesmo IP do servidor do Expo, porta 8000
-//   3) no navegador: http://localhost:8000
-//   4) emulador Android sem Expo Go: http://10.0.2.2:8000
+//   2) APK / EAS Update (modo produção): "extra.apiUrl" do app.json (túnel ngrok).
+//      Fica no app.json, e não no eas.json, porque o EAS Update não lê as
+//      variáveis de ambiente do build — o mesmo endereço vale para os dois.
+//   3) no celular (Expo Go / dev build): mesmo IP do servidor do Expo, porta 8000
+//   4) no navegador: http://localhost:8000
+//   5) emulador Android sem Expo Go: http://10.0.2.2:8000
 // ============================================================
 
 const API_PORT = 8000;
@@ -17,11 +20,16 @@ function resolveBaseUrl(): string {
   const fromEnv = process.env.EXPO_PUBLIC_API_URL;
   if (fromEnv) return fromEnv.replace(/\/$/, "");
 
+  const fromConfig = Constants.expoConfig?.extra?.apiUrl as string | undefined;
+  if (!__DEV__ && fromConfig) return fromConfig.replace(/\/$/, "");
+
   if (Platform.OS === "web") return `http://localhost:${API_PORT}`;
 
   // hostUri é o endereço do servidor de desenvolvimento, ex: "192.168.0.10:8081".
   // Extraímos só o IP e trocamos a porta pela da API.
-  const hostUri = Constants.expoConfig?.hostUri ?? Constants.expoGoConfig?.hostUri;
+  // (expoGoConfig.hostUri saiu dos tipos do expo-manifests, mas versões do Expo Go ainda o enviam)
+  const hostUri =
+    Constants.expoConfig?.hostUri ?? (Constants.expoGoConfig as { hostUri?: string } | null)?.hostUri;
   if (hostUri) {
     const ip = hostUri.split(":")[0];
     return `http://${ip}:${API_PORT}`;

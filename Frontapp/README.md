@@ -36,8 +36,8 @@ EXPO_PUBLIC_API_URL=http://192.168.0.10:8000
 
 ## APK para instalar no celular (acesso de qualquer lugar)
 
-O APK chama a API pelo túnel **ngrok** (endereço fixo definido em `eas.json`,
-perfil `preview`), então funciona fora de casa, até no 4G — desde que o PC
+O APK chama a API pelo túnel **ngrok** (endereço fixo em `app.json` →
+`extra.apiUrl`), então funciona fora de casa, até no 4G — desde que o PC
 esteja ligado com a API e o ngrok rodando:
 
 ```powershell
@@ -45,16 +45,52 @@ cd backend
 .\start_remote.ps1      # abre a API e o ngrok em duas janelas
 ```
 
-Para gerar um APK novo (ex: depois de mudar o app), com o EAS logado na conta:
+Se o endereço do ngrok mudar, troque `extra.apiUrl` no `app.json` e publique
+um update (veja abaixo) — não precisa de APK novo.
 
-```bash
-cd Frontapp
-npx eas-cli build --profile preview --platform android
-```
+## Versões e atualizações
 
-O link de download aparece no terminal e em https://expo.dev (projeto
-`gamestar-app`). O endereço da API fica gravado no APK na hora do build: se
-o endereço do ngrok mudar, gere o APK de novo.
+### Números de versão
+
+| Onde | Campo | Quem muda |
+|---|---|---|
+| `app.json` | `version` (ex: `1.0.1`) — versão que o usuário vê | **você**, antes de cada release |
+| EAS (servidor) | `versionCode` do Android — precisa subir a cada APK | **automático** (`autoIncrement` no `eas.json`) |
+
+`version` segue `MAIOR.MENOR.CORREÇÃO`: correção → `1.0.1`; função nova →
+`1.1.0`; mudança que quebra compatibilidade (ex: API nova) → `2.0.0`.
+
+### Duas formas de levar mudanças ao celular
+
+| Mudou... | Como entregar | Comando (em `Frontapp/`) |
+|---|---|---|
+| Só código JS/TS (telas, textos, lógica, estilos, `app.json` → `extra`) | **EAS Update**: o app baixa sozinho ao abrir, sem reinstalar | `npm run update -- --message "o que mudou"` |
+| Algo nativo (versão do SDK, nova biblioteca nativa, permissões, ícone, `package`) | **APK novo** | `npm run build:apk` |
+
+Na dúvida, publique o update: o `runtimeVersion` usa a política
+**fingerprint**, que calcula uma "impressão digital" da parte nativa. Um update
+só chega a APKs com a mesma parte nativa, então nunca entrega algo
+incompatível — se a parte nativa mudou, o update fica esperando um APK novo.
+
+O app verifica updates ao abrir e aplica na **próxima** abertura (abra, feche
+e abra de novo para ver a mudança).
+
+### Lançando uma versão (release)
+
+1. Tudo que vai na versão já está na `main`.
+2. Suba `version` no `app.json` (ex: `1.0.1` → `1.1.0`), comite e envie.
+3. `npm run build:apk` — o link do APK aparece no terminal e em https://expo.dev
+   (projeto `gamestar-app`).
+4. Marque o commit e publique a Release no GitHub com o APK anexado:
+   ```bash
+   git tag -a app-v1.1.0 -m "GameStar 1.1.0"
+   git push origin app-v1.1.0
+   gh release create app-v1.1.0 gamestar-1.1.0.apk --title "GameStar 1.1.0" --notes "o que mudou"
+   ```
+
+As tags do app usam o prefixo `app-v` (o backend, se for versionado, usa
+`api-v`), porque os dois ficam no mesmo repositório. As versões já lançadas
+ficam em **Releases** no GitHub, cada uma com o APK para baixar.
 
 ## Estrutura de pastas
 
